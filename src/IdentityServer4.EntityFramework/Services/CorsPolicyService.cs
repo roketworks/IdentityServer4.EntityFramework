@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using IdentityServer4.Services;
 using System.Linq;
+using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,11 @@ namespace IdentityServer4.EntityFramework.Services
     /// Implementation of ICorsPolicyService that consults the client configuration in the database for allowed CORS origins.
     /// </summary>
     /// <seealso cref="IdentityServer4.Services.ICorsPolicyService" />
-    public class CorsPolicyService : ICorsPolicyService
+    public class CorsPolicyService<TClient> : ICorsPolicyService 
+        where TClient : Client
     {
         private readonly IHttpContextAccessor _context;
-        private readonly ILogger<CorsPolicyService> _logger;
+        private readonly ILogger<CorsPolicyService<TClient>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CorsPolicyService"/> class.
@@ -28,7 +30,7 @@ namespace IdentityServer4.EntityFramework.Services
         /// <param name="context">The context.</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">context</exception>
-        public CorsPolicyService(IHttpContextAccessor context, ILogger<CorsPolicyService> logger)
+        public CorsPolicyService(IHttpContextAccessor context, ILogger<CorsPolicyService<TClient>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
@@ -42,7 +44,7 @@ namespace IdentityServer4.EntityFramework.Services
         public Task<bool> IsOriginAllowedAsync(string origin)
         {
             // doing this here and not in the ctor because: https://github.com/aspnet/CORS/issues/105
-            var dbContext = _context.HttpContext.RequestServices.GetRequiredService<IConfigurationDbContext>();
+            var dbContext = _context.HttpContext.RequestServices.GetRequiredService<IClientDbContext<TClient>>();
 
             var origins = dbContext.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
 

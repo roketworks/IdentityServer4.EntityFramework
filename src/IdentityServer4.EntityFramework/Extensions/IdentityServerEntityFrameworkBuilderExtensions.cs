@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityServer4.EntityFramework.Entities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -33,20 +34,26 @@ namespace Microsoft.Extensions.DependencyInjection
             this IIdentityServerBuilder builder,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
-            return builder.AddConfigurationStore<ConfigurationDbContext>(storeOptionsAction);
+            return builder.AddConfigurationStore<ConfigurationDbContext, Client, IdentityResource, ApiResource>(storeOptionsAction);
         }
 
         /// <summary>
         /// Configures EF implementation of IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
         /// </summary>
         /// <typeparam name="TContext">The IConfigurationDbContext to use.</typeparam>
+        /// <typeparam name="TClient"></typeparam>
+        /// <typeparam name="TIdentityResource"></typeparam>
+        /// <typeparam name="TApiResource"></typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="storeOptionsAction">The store options action.</param>
         /// <returns></returns>
-        public static IIdentityServerBuilder AddConfigurationStore<TContext>(
+        public static IIdentityServerBuilder AddConfigurationStore<TContext, TClient, TIdentityResource, TApiResource>(
             this IIdentityServerBuilder builder,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
-            where TContext : DbContext, IConfigurationDbContext
+            where TContext : DbContext, IConfigurationDbContext<TClient, TIdentityResource, TApiResource>
+            where TClient : Client
+            where TIdentityResource : IdentityResource 
+            where TApiResource : ApiResource
         {
             var options = new ConfigurationStoreOptions();
             builder.Services.AddSingleton(options);
@@ -63,11 +70,13 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.ConfigureDbContext?.Invoke(dbCtxBuilder);
                 });
             }
-            builder.Services.AddScoped<IConfigurationDbContext, TContext>();
+            builder.Services.AddScoped<IConfigurationDbContext<TClient, TIdentityResource, TApiResource>, TContext>();
+            builder.Services.AddScoped<IClientDbContext<TClient>, TContext>();
+            builder.Services.AddScoped<IResourceDbContext<TIdentityResource, TApiResource>, TContext>();
 
-            builder.Services.AddTransient<IClientStore, ClientStore>();
-            builder.Services.AddTransient<IResourceStore, ResourceStore>();
-            builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
+            builder.Services.AddTransient<IClientStore, ClientStore<TClient>>();
+            builder.Services.AddTransient<IResourceStore, ResourceStore<TIdentityResource, TApiResource>>();
+            builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService<TClient>>();
 
             return builder;
         }
@@ -83,9 +92,9 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddInMemoryCaching();
 
             // add the caching decorators
-            builder.AddClientStoreCache<ClientStore>();
-            builder.AddResourceStoreCache<ResourceStore>();
-            builder.AddCorsPolicyCache<CorsPolicyService>();
+            //builder.AddClientStoreCache<ClientStore>();
+            //builder.AddResourceStoreCache<ResourceStore>();
+            //builder.AddCorsPolicyCache<CorsPolicyService>();
 
             return builder;
         }

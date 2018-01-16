@@ -19,10 +19,12 @@ namespace IdentityServer4.EntityFramework.Stores
     /// Implementation of IResourceStore thats uses EF.
     /// </summary>
     /// <seealso cref="IdentityServer4.Stores.IResourceStore" />
-    public class ResourceStore : IResourceStore
+    public class ResourceStore<TIdentityResource, TApiResource> : IResourceStore
+        where TIdentityResource : Entities.IdentityResource
+        where TApiResource : Entities.ApiResource 
     {
-        private readonly IConfigurationDbContext _context;
-        private readonly ILogger<ResourceStore> _logger;
+        private readonly IResourceDbContext<TIdentityResource, TApiResource> _context;
+        private readonly ILogger<ResourceStore<TIdentityResource, TApiResource>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceStore"/> class.
@@ -30,7 +32,8 @@ namespace IdentityServer4.EntityFramework.Stores
         /// <param name="context">The context.</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">context</exception>
-        public ResourceStore(IConfigurationDbContext context, ILogger<ResourceStore> logger)
+        public ResourceStore(IResourceDbContext<TIdentityResource, TApiResource> context,
+            ILogger<ResourceStore<TIdentityResource, TApiResource>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
