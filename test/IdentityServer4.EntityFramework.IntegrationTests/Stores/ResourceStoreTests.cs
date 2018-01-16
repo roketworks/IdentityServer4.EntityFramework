@@ -88,7 +88,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Resources resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindResourcesByScopeAsync(new List<string>
                 {
                     testIdentityResource.Name,
@@ -122,7 +122,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Resources resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindResourcesByScopeAsync(new List<string>
                 {
                     testIdentityResource.Name,
@@ -163,7 +163,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Resources resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.GetAllResourcesAsync().Result;
             }
 
@@ -189,7 +189,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<IdentityResource> resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindIdentityResourcesByScopeAsync(new List<string>
                 {
                     resource.Name
@@ -220,7 +220,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<IdentityResource> resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindIdentityResourcesByScopeAsync(new List<string>
                 {
                     resource.Name
@@ -246,7 +246,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             ApiResource foundResource;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 foundResource = store.FindApiResourceAsync(resource.Name).Result;
             }
 
@@ -275,7 +275,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<ApiResource> resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindApiResourcesByScopeAsync(new List<string> {resource.Scopes.First().Name}).Result.ToList();
             }
 
@@ -307,7 +307,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<ApiResource> resources;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                var store = new ResourceStore<Entities.IdentityResource, Entities.ApiResource>(context, FakeLogger<ResourceStore<Entities.IdentityResource, Entities.ApiResource>>.Create());
                 resources = store.FindApiResourcesByScopeAsync(new List<string> {resource.Scopes.First().Name}).Result.ToList();
             }
 

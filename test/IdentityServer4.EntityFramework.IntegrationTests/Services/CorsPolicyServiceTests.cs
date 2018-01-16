@@ -61,12 +61,12 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             {
                 var ctx = new DefaultHttpContext();
                 var svcs = new ServiceCollection();
-                svcs.AddSingleton<IConfigurationDbContext>(context);
+                svcs.AddSingleton<IClientDbContext<Entities.Client>>(context);
                 ctx.RequestServices = svcs.BuildServiceProvider();
                 var ctxAccessor = new HttpContextAccessor();
                 ctxAccessor.HttpContext = ctx;
 
-                var service = new CorsPolicyService(ctxAccessor, FakeLogger<CorsPolicyService>.Create());
+                var service = new CorsPolicyService<Entities.Client>(ctxAccessor, FakeLogger<CorsPolicyService<Entities.Client>>.Create());
                 result = service.IsOriginAllowedAsync(testCorsOrigin).Result;
             }
 
@@ -92,12 +92,12 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             {
                 var ctx = new DefaultHttpContext();
                 var svcs = new ServiceCollection();
-                svcs.AddSingleton<IConfigurationDbContext>(context);
+                svcs.AddSingleton<IClientDbContext<Entities.Client>>(context);
                 ctx.RequestServices = svcs.BuildServiceProvider();
                 var ctxAccessor = new HttpContextAccessor();
                 ctxAccessor.HttpContext = ctx;
 
-                var service = new CorsPolicyService(ctxAccessor, FakeLogger<CorsPolicyService>.Create());
+                var service = new CorsPolicyService<Entities.Client>(ctxAccessor, FakeLogger<CorsPolicyService<Entities.Client>>.Create());
                 result = service.IsOriginAllowedAsync("InvalidOrigin").Result;
             }
 
