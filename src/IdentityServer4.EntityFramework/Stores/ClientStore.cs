@@ -18,10 +18,11 @@ namespace IdentityServer4.EntityFramework.Stores
     /// Implementation of IClientStore thats uses EF.
     /// </summary>
     /// <seealso cref="IdentityServer4.Stores.IClientStore" />
-    public class ClientStore : IClientStore
+    public class ClientStore<TClient> : IClientStore where TClient : Entities.Client
+
     {
-        private readonly IConfigurationDbContext _context;
-        private readonly ILogger<ClientStore> _logger;
+        private readonly IClientDbContext<TClient> _context;
+        private readonly ILogger<ClientStore<TClient>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientStore"/> class.
@@ -29,7 +30,7 @@ namespace IdentityServer4.EntityFramework.Stores
         /// <param name="context">The context.</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">context</exception>
-        public ClientStore(IConfigurationDbContext context, ILogger<ClientStore> logger)
+        public ClientStore(IClientDbContext<TClient> context, ILogger<ClientStore<TClient>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;

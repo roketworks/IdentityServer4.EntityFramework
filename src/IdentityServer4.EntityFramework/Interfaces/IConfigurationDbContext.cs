@@ -12,33 +12,17 @@ namespace IdentityServer4.EntityFramework.Interfaces
     /// <summary>
     /// Abstraction for the configuration context.
     /// </summary>
+    /// <typeparam name="TClient"></typeparam>
+    /// <typeparam name="TIdentityResource"></typeparam>
+    /// <typeparam name="TApiResource"></typeparam>
     /// <seealso cref="System.IDisposable" />
-    public interface IConfigurationDbContext : IDisposable
+    public interface IConfigurationDbContext<TClient, TIdentityResource, TApiResource> : 
+        IClientDbContext<TClient>,
+        IResourceDbContext<TIdentityResource, TApiResource>
+        where TClient : Client 
+        where TIdentityResource : IdentityResource 
+        where TApiResource : ApiResource
     {
-        /// <summary>
-        /// Gets or sets the clients.
-        /// </summary>
-        /// <value>
-        /// The clients.
-        /// </value>
-        DbSet<Client> Clients { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the identity resources.
-        /// </summary>
-        /// <value>
-        /// The identity resources.
-        /// </value>
-        DbSet<IdentityResource> IdentityResources { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the API resources.
-        /// </summary>
-        /// <value>
-        /// The API resources.
-        /// </value>
-        DbSet<ApiResource> ApiResources { get; set; }
-
         /// <summary>
         /// Saves the changes.
         /// </summary>
@@ -50,5 +34,48 @@ namespace IdentityServer4.EntityFramework.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<int> SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TClient"></typeparam>
+    public interface IClientDbContext<TClient> : IDisposable
+        where TClient : Client
+
+    {
+        /// <summary>
+        /// Gets or sets the clients.
+        /// </summary>
+        /// <value>
+        /// The clients.
+        /// </value>
+        DbSet<TClient> Clients { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TIdentityResource"></typeparam>
+    public interface IResourceDbContext<TIdentityResource, TApiResource> : IDisposable
+        where TIdentityResource : IdentityResource
+        where TApiResource : ApiResource
+    {
+
+        /// <summary>
+        /// Gets or sets the identity resources.
+        /// </summary>
+        /// <value>
+        /// The identity resources.
+        /// </value>
+        DbSet<TIdentityResource> IdentityResources { get; set; }
+
+        /// <summary>
+        /// Gets or sets the API resources.
+        /// </summary>
+        /// <value>
+        /// The API resources.
+        /// </value>
+        DbSet<TApiResource> ApiResources { get; set; }
     }
 }

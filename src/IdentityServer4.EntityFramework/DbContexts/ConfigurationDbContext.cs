@@ -16,8 +16,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
     /// DbContext for the IdentityServer configuration data.
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext" />
-    public class ConfigurationDbContext : ConfigurationDbContext<ConfigurationDbContext>
+    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext{TClient, TIdentityResource, TApiResource}" />
+    public class ConfigurationDbContext : ConfigurationDbContext<ConfigurationDbContext, Client, IdentityResource, ApiResource>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationDbContext"/> class.
@@ -35,9 +35,13 @@ namespace IdentityServer4.EntityFramework.DbContexts
     /// DbContext for the IdentityServer configuration data.
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext" />
-    public class ConfigurationDbContext<TContext> : DbContext, IConfigurationDbContext
-        where TContext : DbContext, IConfigurationDbContext
+    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext{TClient, TIdentityResource, TApiResource}" />
+    public class ConfigurationDbContext<TContext, TClient, TIdentityResource, TApiResource> 
+        : DbContext, IConfigurationDbContext<TClient, TIdentityResource, TApiResource>
+        where TContext : DbContext, IConfigurationDbContext<TClient, TIdentityResource, TApiResource>
+        where TClient : Client
+        where TIdentityResource : IdentityResource
+        where TApiResource : ApiResource
     {
         private readonly ConfigurationStoreOptions storeOptions;
 
@@ -59,21 +63,21 @@ namespace IdentityServer4.EntityFramework.DbContexts
         /// <value>
         /// The clients.
         /// </value>
-        public DbSet<Client> Clients { get; set; }
+        public DbSet<TClient> Clients { get; set; }
         /// <summary>
         /// Gets or sets the identity resources.
         /// </summary>
         /// <value>
         /// The identity resources.
         /// </value>
-        public DbSet<IdentityResource> IdentityResources { get; set; }
+        public DbSet<TIdentityResource> IdentityResources { get; set; }
         /// <summary>
         /// Gets or sets the API resources.
         /// </summary>
         /// <value>
         /// The API resources.
         /// </value>
-        public DbSet<ApiResource> ApiResources { get; set; }
+        public DbSet<TApiResource> ApiResources { get; set; }
 
         /// <summary>
         /// Saves the changes.
