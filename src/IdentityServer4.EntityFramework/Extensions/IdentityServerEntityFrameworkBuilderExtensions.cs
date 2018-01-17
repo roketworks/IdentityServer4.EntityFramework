@@ -41,9 +41,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Configures EF implementation of IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
         /// </summary>
         /// <typeparam name="TContext">The IConfigurationDbContext to use.</typeparam>
-        /// <typeparam name="TClient"></typeparam>
-        /// <typeparam name="TIdentityResource"></typeparam>
-        /// <typeparam name="TApiResource"></typeparam>
+        /// <typeparam name="TClient">The Client Entity Type to use.</typeparam>
+        /// <typeparam name="TIdentityResource">The IdentityResource Entity Type to use</typeparam>
+        /// <typeparam name="TApiResource">The ApiResource Entity Type to use</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="storeOptionsAction">The store options action.</param>
         /// <returns></returns>
@@ -82,7 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Configures caching for IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// Configures caching for Default IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
@@ -92,9 +92,33 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddInMemoryCaching();
 
             // add the caching decorators
-            //builder.AddClientStoreCache<ClientStore>();
-            //builder.AddResourceStoreCache<ResourceStore>();
-            //builder.AddCorsPolicyCache<CorsPolicyService>();
+            builder.AddClientStoreCache<ClientStore<Client>>();
+            builder.AddResourceStoreCache<ResourceStore<IdentityResource, ApiResource>>();
+            builder.AddCorsPolicyCache<CorsPolicyService<Client>>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Configures caching for Generic IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <typeparam name="TClient">The Client Entity Type to use.</typeparam>
+        /// <typeparam name="TIdentityResource">The IdentityResource Entity Type to use</typeparam>
+        /// <typeparam name="TApiResource">The ApiResource Entity Type to use</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
+        public static IIdentityServerBuilder AddConfigurationStoreCache<TClient, TIdentityResource, TApiResource>(
+            this IIdentityServerBuilder builder) 
+            where TClient : Client 
+            where TIdentityResource : IdentityResource 
+            where TApiResource : ApiResource
+        {
+            builder.AddInMemoryCaching();
+
+            // add the caching decorators
+            builder.AddClientStoreCache<ClientStore<TClient>>();
+            builder.AddResourceStoreCache<ResourceStore<TIdentityResource, TApiResource>>();
+            builder.AddCorsPolicyCache<CorsPolicyService<TClient>>();
 
             return builder;
         }

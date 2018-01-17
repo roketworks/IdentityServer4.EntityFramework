@@ -12,9 +12,9 @@ namespace IdentityServer4.EntityFramework.Interfaces
     /// <summary>
     /// Abstraction for the configuration context.
     /// </summary>
-    /// <typeparam name="TClient"></typeparam>
-    /// <typeparam name="TIdentityResource"></typeparam>
-    /// <typeparam name="TApiResource"></typeparam>
+    /// <typeparam name="TClient">The Client Entity Type to use.</typeparam>
+    /// <typeparam name="TIdentityResource">The IdentityResource Entity Type to use</typeparam>
+    /// <typeparam name="TApiResource">The ApiResource Entity Type to use</typeparam>
     /// <seealso cref="System.IDisposable" />
     public interface IConfigurationDbContext<TClient, TIdentityResource, TApiResource> : 
         IClientDbContext<TClient>,
@@ -37,9 +37,10 @@ namespace IdentityServer4.EntityFramework.Interfaces
     }
 
     /// <summary>
-    /// 
+    /// Abstraction for the Client Entity DBSet
     /// </summary>
-    /// <typeparam name="TClient"></typeparam>
+    /// <typeparam name="TClient">The Client Entity Type to use.</typeparam>
+    /// <seealso cref="System.IDisposable" />
     public interface IClientDbContext<TClient> : IDisposable
         where TClient : Client
 
@@ -54,9 +55,11 @@ namespace IdentityServer4.EntityFramework.Interfaces
     }
 
     /// <summary>
-    /// 
+    /// Abstraction for the Resource Entities DBSets
     /// </summary>
-    /// <typeparam name="TIdentityResource"></typeparam>
+    /// <typeparam name="TIdentityResource">The IdentityResource Entity Type to use</typeparam>
+    /// <typeparam name="TApiResource">The ApiResource Entity Type to use</typeparam>
+    /// <seealso cref="System.IDisposable" />
     public interface IResourceDbContext<TIdentityResource, TApiResource> : IDisposable
         where TIdentityResource : IdentityResource
         where TApiResource : ApiResource
